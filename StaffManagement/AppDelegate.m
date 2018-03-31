@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "WaiterListViewController.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +18,23 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // Fetch Main Storyboard
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+    
+    // Instantiate Root Navigation Controller
+    UINavigationController *rootNavigationController = (UINavigationController *)[mainStoryboard instantiateViewControllerWithIdentifier:@"rootNavigationController"];
+    
+    // Configure View Controller
+    WaiterListViewController *viewController = (WaiterListViewController *)[rootNavigationController topViewController];
+    
+    if ([viewController isKindOfClass:[WaiterListViewController class]]) {
+        [viewController setManagedObjectContext:self.managedObjectContext];
+    }
+    
+    // Configure Window
+    [self.window setRootViewController:rootNavigationController];
+    
     return YES;
 }
 
