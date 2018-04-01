@@ -28,7 +28,7 @@
     {
         Restaurant *aRestaurant;
         NSError *error = nil;
-        AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         NSFetchRequest *request = [[NSFetchRequest alloc]initWithEntityName:@"Restaurant"];
         NSArray *results = [appDelegate.managedObjectContext executeFetchRequest:request error:&error];
         

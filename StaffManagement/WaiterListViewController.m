@@ -11,14 +11,14 @@
 #import "RestaurantManager.h"
 #import "Waiter.h"
 #import "AppDelegate.h"
-
-static NSString * const kCellIdentifier = @"waiterCell";
+#import "StaffManagement-Swift.h"
 
 @interface WaiterListViewController () <NSFetchedResultsControllerDelegate>
 
 @property IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSArray *waiters;
 @property (nonatomic, strong) Restaurant *currentRestaurant;
+@property (nonatomic, strong) Waiter *waiter;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
 @end
@@ -29,7 +29,6 @@ static NSString * const kCellIdentifier = @"waiterCell";
     [super viewDidLoad];
     
     self.currentRestaurant = [[RestaurantManager sharedManager]currentRestaurant];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kCellIdentifier];
     [self setupFetchResultsController];
 }
 
@@ -89,12 +88,15 @@ static NSString * const kCellIdentifier = @"waiterCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: @"waiterCell" forIndexPath:indexPath];
+    
     Waiter *waiter = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self configureCell:cell withWaiter:waiter];
     
@@ -102,7 +104,6 @@ static NSString * const kCellIdentifier = @"waiterCell";
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
@@ -113,10 +114,7 @@ static NSString * const kCellIdentifier = @"waiterCell";
         
         NSError *error = nil;
         if (![context save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-            abort();
+            NSAssert(NO, @"Error saving context: %@\n%@", [error localizedDescription], [error userInfo]);
         }
     }
 }
@@ -125,13 +123,18 @@ static NSString * const kCellIdentifier = @"waiterCell";
     cell.textLabel.text = waiter.name;
 }
 
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//
+//    [self performSegueWithIdentifier:@"showWaiterShifts" sender: nil];
+//}
+
 #pragma mark - Fetched Results Controller
 
 - (void)setupFetchResultsController {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Waiter"];
-    NSSortDescriptor *nameSortByAscending = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    [request setSortDescriptors:@[nameSortByAscending]];
+    NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [request setSortDescriptors:@[sortByName]];
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     [self.fetchedResultsController setDelegate:self];
@@ -176,9 +179,18 @@ static NSString * const kCellIdentifier = @"waiterCell";
     }
 }
 
+#pragma mark - Navigation
 
-
-
-
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showWaiterShifts"]) {
+        
+        WaiterShiftsTableVC *vc = [segue destinationViewController];
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        self.waiter = [self.fetchedResultsController objectAtIndexPath: indexPath];
+        vc.waiter = self.waiter;
+        vc.managedObjectContext = self.managedObjectContext;
+    }
+}
 
 @end
