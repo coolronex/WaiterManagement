@@ -30,6 +30,7 @@
     
     self.currentRestaurant = [[RestaurantManager sharedManager]currentRestaurant];
     [self setupFetchResultsController];
+    [self setupViewController];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -121,12 +122,12 @@
 
 - (void)configureCell:(UITableViewCell *)cell withWaiter:(Waiter *)waiter {
     cell.textLabel.text = waiter.name;
+    [cell.textLabel setFont:[UIFont fontWithName:@"Futura" size: 18]];
 }
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//
-//    [self performSegueWithIdentifier:@"showWaiterShifts" sender: nil];
-//}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
 #pragma mark - Fetched Results Controller
 
@@ -191,6 +192,18 @@
         vc.waiter = self.waiter;
         vc.managedObjectContext = self.managedObjectContext;
     }
+}
+
+#pragma mark - Private Functions
+
+- (void)setupViewController {
+    
+    UIImage *image = [UIImage imageNamed:@"TouchBistro-logo"];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(0, 0, 170, 35);
+    imageView.contentMode = UIViewContentModeCenter;
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.navigationItem.titleView = imageView;
 }
 
 @end

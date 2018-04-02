@@ -17,6 +17,10 @@ class WaiterShiftsTableVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let waiter = waiter, let waiterName = waiter.name {
+            self.title = "\(waiterName)'s Shifts"
+        }
+        
         updateShiftArray()
     }
     
