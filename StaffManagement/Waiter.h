@@ -23,5 +23,6 @@
 @interface Waiter (CoreDataGeneratedAccessors)
 
 - (void) addShiftObject:(Shift *)value;
+- (void) removeShiftObject:(Shift *)value;
 
 @end

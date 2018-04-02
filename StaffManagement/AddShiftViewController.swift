@@ -15,7 +15,6 @@ class AddShiftViewController: UIViewController {
     @IBOutlet weak var endDatePicker: UIDatePicker!
     @IBOutlet weak var shiftDatePicker: UIDatePicker!
     
-    
     var managedObjectContext: NSManagedObjectContext!
     var waiter: Waiter?
     
@@ -23,7 +22,6 @@ class AddShiftViewController: UIViewController {
         super.viewDidLoad()
 
         managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
-        
     }
 
     @IBAction func saveShiftTapped(_ sender: UIButton) {

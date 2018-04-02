@@ -17,16 +17,19 @@ class WaiterShiftsTableVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let waiter = waiter {
-            shiftArray = Array(waiter.shifts)
-        }
+        updateShiftArray()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        updateShiftArray()
+        tableView.reloadData()
+    }
+    
+    private func updateShiftArray() {
         
         if let waiter = waiter {
             shiftArray = Array(waiter.shifts)
-            tableView.reloadData()
+            shiftArray.sort(by: { $0.date < $1.date })
         }
     }
     
@@ -48,6 +51,25 @@ class WaiterShiftsTableVC: UITableViewController {
             cell.shift = shift
             
             return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            managedObjectContext.delete(shiftArray[indexPath.row] as NSManagedObject)
+            
+            do {
+                try managedObjectContext.save()
+            } catch {
+                print(#line, error.localizedDescription)
+            }
+            
+            tableView.beginUpdates()
+            shiftArray.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
     
     

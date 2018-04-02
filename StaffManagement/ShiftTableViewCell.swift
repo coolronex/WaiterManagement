@@ -26,9 +26,12 @@ class ShiftTableViewCell: UITableViewCell {
         let day = dateFormatter(dateFormat: "dd", date: shift.date)
         let month = dateFormatter(dateFormat: "MMM", date: shift.date)
         
+        let startTime = timeFormatter(time: shift.startTime)
+        let endTime = timeFormatter(time: shift.endTime)
+        
         dateLabel.text = day
         monthLabel.text = month
-        shiftTimeLabel.text = "\(shift.startTime) - \(shift.endTime)"
+        shiftTimeLabel.text = "\(startTime) - \(endTime)"
     }
     
     private func dateFormatter(dateFormat: String, date: Date) -> String {
@@ -37,6 +40,14 @@ class ShiftTableViewCell: UITableViewCell {
         dayDateFormatter.dateFormat = dateFormat
         
         return dayDateFormatter.string(from: date)
+    }
+    
+    private func timeFormatter(time: Date) -> String {
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.timeStyle = .short
+        
+        return timeFormatter.string(from: time)
     }
     
     override func awakeFromNib() {
