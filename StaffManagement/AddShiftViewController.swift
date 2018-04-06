@@ -21,7 +21,10 @@ class AddShiftViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // adding this line so that it doesn't display same startTime & endTime
+        endDatePicker.setDate(endDatePicker.date.addingTimeInterval(1.0 * 60.0), animated: false)
+        
         managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
     }
 
